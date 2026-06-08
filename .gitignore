@@ -1,0 +1,5 @@
+missed_calls.db
+*.log
+__pycache__/
+*.pyc
+.env
