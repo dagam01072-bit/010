@@ -48,6 +48,7 @@ def upload_numbers(numbers: list[tuple]) -> dict:
     uploaded_ids = []
     duplicate_count = 0
     seen = set(existing_phones)
+    device_counts = {}  # device_id별 등록 건수
 
     for call_id, number, device_id, received_at in numbers:
         normalized = normalize_phone(number)
@@ -57,6 +58,7 @@ def upload_numbers(numbers: list[tuple]) -> dict:
         seen.add(normalized)
         new_rows.append([None, normalized])
         uploaded_ids.append(call_id)
+        device_counts[device_id] = device_counts.get(device_id, 0) + 1
 
     if new_rows:
         ars_ws = sh.worksheet(UPLOAD_SHEET)
@@ -67,4 +69,5 @@ def upload_numbers(numbers: list[tuple]) -> dict:
         "total": len(numbers),
         "duplicates": duplicate_count,
         "registered": len(new_rows),
+        "device_counts": device_counts,
     }

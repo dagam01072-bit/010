@@ -56,8 +56,23 @@ def upload_job():
 
         logging.info(f"총 {result['total']}건 / 중복 {result['duplicates']}건 / 등록 {result['registered']}건")
 
+        # device_id → 표시 이름 매핑
+        device_label = {
+            "main": "메인PC",
+            "sub": "서브PC",
+            "geoin": "거인PC",
+            "ars": "ARS",
+        }
+        device_lines = ""
+        for dev_id, count in result["device_counts"].items():
+            label = device_label.get(dev_id, dev_id)
+            device_lines += f"{label} : {count}건\n"
+
         msg = (
-            f"메인PC 회신 정상등록\n"
+            f"회신 정상등록\n"
+            f"─────────────\n"
+            f"{device_lines}"
+            f"─────────────\n"
             f"총 갯수 : {result['total']}\n"
             f"중복 제거 : {result['duplicates']}\n"
             f"등록 갯수 : {result['registered']}"

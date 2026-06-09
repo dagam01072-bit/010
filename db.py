@@ -51,10 +51,7 @@ def normalize_timestamp(ts: str) -> str:
 
 
 def is_duplicate(number: str, received_at: str) -> bool:
-    """
-    같은 번호가 DEDUP_MINUTES 이내에 이미 들어온 적 있으면 True
-    received_at 형식: 'YYYY-MM-DD HH:MM:SS'
-    """
+    """부재중 전화 중복 체크 — 5분 이내 같은 번호"""
     with get_conn() as conn:
         row = conn.execute("""
             SELECT id FROM calls
@@ -64,6 +61,15 @@ def is_duplicate(number: str, received_at: str) -> bool:
                   ) < ?
             LIMIT 1
         """, (number, received_at, DEDUP_MINUTES)).fetchone()
+    return row is not None
+
+
+def is_duplicate_sms(number: str) -> bool:
+    """SMS 중복 체크 — DB 전체 기준 (한 번이라도 있으면 True)"""
+    with get_conn() as conn:
+        row = conn.execute("""
+            SELECT id FROM calls WHERE number = ? LIMIT 1
+        """, (number,)).fetchone()
     return row is not None
 
 

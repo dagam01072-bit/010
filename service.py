@@ -17,6 +17,8 @@ import win32serviceutil
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
+# 서비스가 LocalSystem으로 실행될 때 작업 디렉토리 명시
+os.chdir(BASE_DIR)
 
 
 class MissedCallService(win32serviceutil.ServiceFramework):
