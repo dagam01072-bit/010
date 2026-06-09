@@ -40,6 +40,12 @@ def receive_call():
     if not number or not timestamp:
         return jsonify({"status": "error", "message": "number 또는 timestamp 누락"}), 400
 
+    # +8210XXXXXXXX → 010XXXXXXXX 정규화
+    if number.startswith("+8210"):
+        number = "0" + number[3:]
+    elif number.startswith("8210"):
+        number = "0" + number[2:]
+
     # 010 번호만 처리
     if not number.startswith("010"):
         logging.info(f"[무시] 010 아님: {number}")
