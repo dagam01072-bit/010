@@ -9,6 +9,7 @@ import urllib.parse
 from datetime import datetime
 from db import get_pending_calls, mark_uploaded
 from sheets import upload_numbers
+from export_excel import export
 
 # 텔레그램 설정 (DB 폴더 .env 와 동일한 값)
 TELEGRAM_TOKEN = "8600709357:AAFA0mzVgRZFY9dx81fJBTJv1T8Wr9mzCFo"
@@ -82,6 +83,13 @@ def upload_job():
     except Exception as e:
         logging.error(f"업로드 실패: {e}")
         send_telegram(f"메인PC 업로드 실패\n오류: {e}")
+
+    # 업로드 완료 후 엑셀 내보내기
+    try:
+        export()
+        logging.info("엑셀 내보내기 완료")
+    except Exception as e:
+        logging.error(f"엑셀 내보내기 실패: {e}")
 
     logging.info("=== 업로드 작업 완료 ===")
 
